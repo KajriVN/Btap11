@@ -1,0 +1,62 @@
+package vn.iotstar.controller.auth;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import vn.iotstar.entity.User_24162063;
+import vn.iotstar.service.IUserService_24162063;
+import vn.iotstar.service.impl.UserService_24162063;
+import vn.iotstar.util.Constant_24162063;
+
+import java.io.IOException;
+
+@WebServlet(urlPatterns = "/login")
+public class LoginController_24162063 extends HttpServlet {
+
+    private final IUserService_24162063 userService = new UserService_24162063();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute(Constant_24162063.SESSION_ACCOUNT) instanceof User_24162063 user) {
+            redirectByRole(req, resp, user);
+            return;
+        }
+        req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+
+        User_24162063 user = userService.login(email, password);
+        if (user == null) {
+            // Dang nhap that bai -> quay lai trang dang nhap
+            req.setAttribute("error", "Email hoặc mật khẩu không đúng");
+            req.setAttribute("email", email);
+            req.getRequestDispatcher("/views/auth/login.jsp").forward(req, resp);
+            return;
+        }
+
+        // Tao session moi tranh session fixation
+        HttpSession old = req.getSession(false);
+        if (old != null) {
+            old.invalidate();
+        }
+        HttpSession session = req.getSession(true);
+        session.setAttribute(Constant_24162063.SESSION_ACCOUNT, user);
+        redirectByRole(req, resp, user);
+    }
+
+    private void redirectByRole(HttpServletRequest req, HttpServletResponse resp, User_24162063 user) throws IOException {
+        if (user.isAdminRole()) {
+            resp.sendRedirect(req.getContextPath() + "/admin/home");
+        } else {
+            resp.sendRedirect(req.getContextPath() + "/home");
+        }
+    }
+}
