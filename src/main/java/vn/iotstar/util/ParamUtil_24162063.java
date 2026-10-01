@@ -23,4 +23,20 @@ public final class ParamUtil_24162063 {
     public static boolean isBlank(String value) {
         return value == null || value.isBlank();
     }
+
+    /**
+     * Chi nhan duong dan noi bo dang "/abc?x=1" de redirect (chong open redirect).
+     * Tra ve null neu khong hop le.
+     */
+    public static String safePath(String path) {
+        if (isBlank(path)) {
+            return null;
+        }
+        String p = path.trim();
+        if (!p.startsWith("/") || p.startsWith("//") || p.contains("\\")
+                || p.chars().anyMatch(ch -> ch < 0x20 || ch == 0x7f)) {
+            return null;
+        }
+        return p;
+    }
 }

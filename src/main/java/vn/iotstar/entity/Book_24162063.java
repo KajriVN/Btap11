@@ -11,6 +11,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import vn.iotstar.util.Constant_24162063;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -71,6 +72,17 @@ public class Book_24162063 implements Serializable {
         return authors.stream()
                 .map(Author_24162063::getAuthorName)
                 .collect(Collectors.joining(", "));
+    }
+
+    /** Con hang hay khong. Dung trong JSP: ${book.inStock} */
+    public boolean isInStock() {
+        return quantity != null && quantity > 0;
+    }
+
+    /** So luong toi da duoc mua: khong vuot ton kho va khong qua CART_MAX_PER_ITEM. */
+    public int getMaxOrderQuantity() {
+        int stock = quantity == null ? 0 : Math.max(quantity, 0);
+        return Math.min(stock, Constant_24162063.CART_MAX_PER_ITEM);
     }
 
     public Integer getBookid() {

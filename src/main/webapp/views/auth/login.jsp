@@ -17,7 +17,12 @@
                     <div class="alert alert-danger"><c:out value="${error}"/></div>
                 </c:if>
 
+                <c:if test="${not empty param.next}">
+                    <div class="alert alert-info">Bạn cần đăng nhập để tiếp tục.</div>
+                </c:if>
+
                 <form method="post" action="${pageContext.request.contextPath}/login">
+                    <input type="hidden" name="next" value="<c:out value='${param.next}'/>">
                     <div class="mb-3">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" class="form-control" required value="<c:out value='${email}'/>">

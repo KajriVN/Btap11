@@ -17,6 +17,14 @@ public final class Constant_24162063 {
     public static final String SESSION_PENDING_USER = "pendingUser";
     public static final String SESSION_OTP = "otp";
     public static final String SESSION_OTP_EXPIRE = "otpExpire";
+    public static final String SESSION_CART_COUNT = "cartCount";
+
+    // Thong bao hien o dau trang (decorator user.jsp)
+    public static final String SESSION_NOTICE = "notice";
+    public static final String SESSION_NOTICE_ERROR = "noticeError";
+
+    // Gio hang: moi sach chi duoc mua toi da 10 cuon (va khong vuot ton kho)
+    public static final int CART_MAX_PER_ITEM = 10;
 
     // Phan trang
     public static final int HOME_PAGE_SIZE = 6;

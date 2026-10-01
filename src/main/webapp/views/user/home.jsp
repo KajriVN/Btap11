@@ -6,6 +6,9 @@
 <head><title>${isProductPage ? 'Sản phẩm' : 'Trang chủ'}</title></head>
 <body>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<%-- Trang hien tai: them vao gio xong quay lai day --%>
+<c:set var="backUrl" value="${isProductPage ? '/books' : '/home'}?page=${result.page}"/>
+<c:url var="loginUrl" value="/login"><c:param name="next" value="${backUrl}"/></c:url>
 
 <h3 class="mb-4">
     <c:choose>
@@ -37,9 +40,29 @@
                     <p class="mb-1"><strong>Publisher:</strong> <c:out value="${b.publisher}"/></p>
                     <p class="mb-1"><strong>Publisher_date:</strong> ${b.publishDate}</p>
                     <p class="mb-1"><strong>Quantity:</strong> ${b.quantity}</p>
+                    <p class="mb-1"><strong>Price:</strong> <t:money value="${b.price}"/></p>
                     <p class="mb-0">
                         <a href="${ctx}/book/detail?id=${b.bookid}#reviews">Review (${b.reviewCount})</a>
                     </p>
+                </div>
+                <div class="card-footer bg-white border-0 pt-0 pb-3">
+                    <c:choose>
+                        <c:when test="${not b.inStock}">
+                            <button class="btn btn-secondary btn-sm w-100" disabled>Hết hàng</button>
+                        </c:when>
+                        <c:when test="${empty sessionScope.account}">
+                            <a href="${loginUrl}" class="btn btn-outline-success btn-sm w-100">
+                                <i class="bi bi-cart-plus"></i> Đăng nhập để mua</a>
+                        </c:when>
+                        <c:otherwise>
+                            <form method="post" action="${ctx}/cart/add">
+                                <input type="hidden" name="bookid" value="${b.bookid}">
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="back" value="${backUrl}">
+                                <button class="btn btn-success btn-sm w-100"><i class="bi bi-cart-plus"></i> Thêm vào giỏ</button>
+                            </form>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </div>
         </div>

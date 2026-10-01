@@ -57,6 +57,10 @@ public class BookRepository_24162063 extends AbstractRepository_24162063 impleme
             em.createQuery("DELETE FROM Rating_24162063 r WHERE r.id.bookid = :id")
                     .setParameter("id", bookid)
                     .executeUpdate();
+            // Bo sach khoi gio hang cua moi user
+            em.createNativeQuery("DELETE FROM cart_items WHERE bookid = ?1")
+                    .setParameter(1, bookid)
+                    .executeUpdate();
             book.getAuthors().clear(); // xoa dong trong book_author
             em.remove(book);
         });

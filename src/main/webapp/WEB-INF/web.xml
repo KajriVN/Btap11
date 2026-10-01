@@ -21,6 +21,17 @@
         <url-pattern>/admin</url-pattern>
     </filter-mapping>
 
+    <!-- ===================== Bat buoc dang nhap: gio hang, thanh toan, don hang ===================== -->
+    <filter>
+        <filter-name>authFilter</filter-name>
+        <filter-class>vn.iotstar.filter.AuthFilter_24162063</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/cart/*</url-pattern>
+        <url-pattern>/cart</url-pattern>
+    </filter-mapping>
+
     <!-- ===================== SiteMesh 3 Decorator ===================== -->
     <filter>
         <filter-name>sitemesh</filter-name>

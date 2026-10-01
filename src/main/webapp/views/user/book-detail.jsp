@@ -25,6 +25,29 @@
             <p class="mb-1"><strong>Quantity:</strong> ${book.quantity}</p>
             <p class="mb-1"><strong>Price:</strong> ${book.price}</p>
             <p class="mb-1"><a href="#reviews">Reviews (${book.reviewCount})</a></p>
+
+            <%-- Them vao gio hang --%>
+            <div class="mt-3">
+                <c:choose>
+                    <c:when test="${not book.inStock}">
+                        <span class="badge text-bg-secondary fs-6">Hết hàng</span>
+                    </c:when>
+                    <c:when test="${empty sessionScope.account}">
+                        <c:url var="loginUrl" value="/login"><c:param name="next" value="/book/detail?id=${book.bookid}"/></c:url>
+                        <a href="${loginUrl}" class="btn btn-outline-success"><i class="bi bi-cart-plus"></i> Đăng nhập để mua</a>
+                    </c:when>
+                    <c:otherwise>
+                        <form method="post" action="${ctx}/cart/add" class="d-flex flex-wrap align-items-center gap-2">
+                            <input type="hidden" name="bookid" value="${book.bookid}">
+                            <input type="hidden" name="back" value="/book/detail?id=${book.bookid}">
+                            <input type="number" name="quantity" value="1" min="1" max="${book.maxOrderQuantity}"
+                                   class="form-control" style="width: 90px">
+                            <button class="btn btn-success"><i class="bi bi-cart-plus"></i> Thêm vào giỏ</button>
+                            <span class="small text-secondary">Tối đa ${book.maxOrderQuantity} cuốn</span>
+                        </form>
+                    </c:otherwise>
+                </c:choose>
+            </div>
             <c:if test="${not empty book.description}">
                 <p class="mt-3 text-secondary"><c:out value="${book.description}"/></p>
             </c:if>

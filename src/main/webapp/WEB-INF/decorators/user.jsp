@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -11,6 +12,7 @@
         body { min-height: 100vh; display: flex; flex-direction: column; background: #f6f7fb; }
         main { flex: 1; }
         .book-cover { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+        .cart-thumb { width: 56px; height: 75px; object-fit: cover; }
     </style>
     <sitemesh:write property="head"/>
 </head>
@@ -18,6 +20,21 @@
 <%@ include file="/WEB-INF/includes/header.jspf" %>
 
 <main class="container py-4">
+    <%-- Thong bao 1 lan (gio hang, dat hang...) --%>
+    <c:if test="${not empty sessionScope.notice}">
+        <div class="alert alert-success alert-dismissible fade show">
+            <c:out value="${sessionScope.notice}"/>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <c:remove var="notice" scope="session"/>
+    </c:if>
+    <c:if test="${not empty sessionScope.noticeError}">
+        <div class="alert alert-danger alert-dismissible fade show">
+            <c:out value="${sessionScope.noticeError}"/>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <c:remove var="noticeError" scope="session"/>
+    </c:if>
     <sitemesh:write property="body"/>
 </main>
 

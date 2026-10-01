@@ -8,6 +8,7 @@ GO
 USE BookStore;
 GO
 
+IF OBJECT_ID(N'dbo.cart_items', N'U') IS NOT NULL DROP TABLE dbo.cart_items;
 IF OBJECT_ID(N'dbo.rating', N'U') IS NOT NULL DROP TABLE dbo.rating;
 IF OBJECT_ID(N'dbo.book_author', N'U') IS NOT NULL DROP TABLE dbo.book_author;
 IF OBJECT_ID(N'dbo.users', N'U') IS NOT NULL DROP TABLE dbo.users;
@@ -60,6 +61,19 @@ CREATE TABLE dbo.rating (
     CONSTRAINT PK_rating PRIMARY KEY (userid, bookid),
     CONSTRAINT FK_rating_users FOREIGN KEY (userid) REFERENCES dbo.users(id),
     CONSTRAINT FK_rating_books FOREIGN KEY (bookid) REFERENCES dbo.books(bookid)
+);
+
+-- Gio hang: moi user 1 dong / 1 sach, so luong > 0
+CREATE TABLE dbo.cart_items (
+    id       INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    userid   INT      NOT NULL,
+    bookid   INT      NOT NULL,
+    quantity INT      NOT NULL,
+    added_at DATETIME NULL,
+    CONSTRAINT UQ_cart_items_user_book UNIQUE (userid, bookid),
+    CONSTRAINT CK_cart_items_quantity CHECK (quantity > 0),
+    CONSTRAINT FK_cart_items_users FOREIGN KEY (userid) REFERENCES dbo.users(id),
+    CONSTRAINT FK_cart_items_books FOREIGN KEY (bookid) REFERENCES dbo.books(bookid)
 );
 GO
 

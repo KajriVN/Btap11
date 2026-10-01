@@ -7,9 +7,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.iotstar.entity.User_24162063;
+import vn.iotstar.service.ICartService_24162063;
 import vn.iotstar.service.IUserService_24162063;
+import vn.iotstar.service.impl.CartService_24162063;
 import vn.iotstar.service.impl.UserService_24162063;
 import vn.iotstar.util.Constant_24162063;
+import vn.iotstar.util.ParamUtil_24162063;
 
 import java.io.IOException;
 
@@ -17,6 +20,7 @@ import java.io.IOException;
 public class LoginController_24162063 extends HttpServlet {
 
     private final IUserService_24162063 userService = new UserService_24162063();
+    private final ICartService_24162063 cartService = new CartService_24162063();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -49,6 +53,14 @@ public class LoginController_24162063 extends HttpServlet {
         }
         HttpSession session = req.getSession(true);
         session.setAttribute(Constant_24162063.SESSION_ACCOUNT, user);
+        session.setAttribute(Constant_24162063.SESSION_CART_COUNT, cartService.countItems(user.getId()));
+
+        // Dang nhap tu trang gio hang / don hang... thi quay lai dung trang do
+        String next = ParamUtil_24162063.safePath(req.getParameter("next"));
+        if (next != null) {
+            resp.sendRedirect(req.getContextPath() + next);
+            return;
+        }
         redirectByRole(req, resp, user);
     }
 
