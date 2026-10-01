@@ -6,9 +6,13 @@ import vn.iotstar.repository.IOrderRepository_24162063;
 import vn.iotstar.repository.impl.OrderRepository_24162063;
 import vn.iotstar.service.IOrderService_24162063;
 import vn.iotstar.util.Constant_24162063;
+import vn.iotstar.util.PageResult_24162063;
 import vn.iotstar.util.ParamUtil_24162063;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class OrderService_24162063 implements IOrderService_24162063 {
@@ -53,5 +57,23 @@ public class OrderService_24162063 implements IOrderService_24162063 {
     @Override
     public Order_24162063 findByIdAndUser(int orderId, int userid) {
         return orderRepository.findByIdAndUser(orderId, userid);
+    }
+
+    @Override
+    public PageResult_24162063<Order_24162063> getPage(int userid, OrderStatus_24162063 status, int page, int size) {
+        long total = orderRepository.countByUser(userid, status);
+        int current = PageResult_24162063.normalizePage(page, size, total);
+        List<Order_24162063> orders = orderRepository.findByUser(userid, status, (current - 1) * size, size);
+        return new PageResult_24162063<>(orders, current, size, total);
+    }
+
+    @Override
+    public Map<String, Long> countByStatus(int userid) {
+        Map<OrderStatus_24162063, Long> counts = orderRepository.countByStatus(userid);
+        Map<String, Long> result = new LinkedHashMap<>();
+        for (OrderStatus_24162063 s : OrderStatus_24162063.values()) {
+            result.put(s.getCode(), counts.getOrDefault(s, 0L));
+        }
+        return result;
     }
 }

@@ -32,6 +32,7 @@ public final class Constant_24162063 {
     // Phan trang
     public static final int HOME_PAGE_SIZE = 6;
     public static final int ADMIN_PAGE_SIZE = 5;
+    public static final int ORDER_PAGE_SIZE = 5;
 
     // OTP
     public static final int OTP_EXPIRE_MINUTES = 5;

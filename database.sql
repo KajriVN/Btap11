@@ -166,3 +166,28 @@ INSERT INTO dbo.rating (userid, bookid, rating, review_text) VALUES
 (2, 10, 5, 'Design patterns made easy.'),
 (4, 12, 5, 'Timeless advice.');
 GO
+
+/* ------------------- Doi trang thai don hang de test ------------------
+   Dat hang tren web xong, chay cac lenh duoi day roi F5 trang "Don hang"
+   de thay don chuyen sang tab tuong ung.
+
+   NEW        : Don hang moi (mac dinh khi dat)
+   CONFIRMED  : Da xac nhan
+   PREPARING  : Chuan bi hang
+   SHIPPING   : Dang van chuyen
+   DELIVERING : Dang giao hang
+   DELIVERED  : Da giao
+   CANCELLED  : Da huy
+   RETURNED   : Hoan hang
+
+   SELECT order_id, userid, receiver_name, status, total_amount, created_at
+   FROM dbo.orders ORDER BY order_id DESC;
+
+   UPDATE dbo.orders SET status = 'CONFIRMED'  WHERE order_id = 1;
+   UPDATE dbo.orders SET status = 'PREPARING'  WHERE order_id = 1;
+   UPDATE dbo.orders SET status = 'SHIPPING'   WHERE order_id = 1;
+   UPDATE dbo.orders SET status = 'DELIVERING' WHERE order_id = 1;
+   UPDATE dbo.orders SET status = 'DELIVERED'  WHERE order_id = 1;
+   UPDATE dbo.orders SET status = 'CANCELLED'  WHERE order_id = 1;
+   UPDATE dbo.orders SET status = 'RETURNED'   WHERE order_id = 1;
+   ---------------------------------------------------------------------- */

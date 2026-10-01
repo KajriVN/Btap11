@@ -1,6 +1,10 @@
 package vn.iotstar.repository;
 
+import vn.iotstar.entity.OrderStatus_24162063;
 import vn.iotstar.entity.Order_24162063;
+
+import java.util.List;
+import java.util.Map;
 
 public interface IOrderRepository_24162063 {
 
@@ -13,4 +17,12 @@ public interface IOrderRepository_24162063 {
 
     /** Lay don kem chi tiet, chi tra ve neu don thuoc ve user nay. */
     Order_24162063 findByIdAndUser(int orderId, int userid);
+
+    /** 1 trang don cua user (moi nhat truoc), kem chi tiet. status = null -> tat ca. */
+    List<Order_24162063> findByUser(int userid, OrderStatus_24162063 status, int offset, int limit);
+
+    long countByUser(int userid, OrderStatus_24162063 status);
+
+    /** Trang thai -> so don cua user (trang thai nao khong co don thi khong co trong map). */
+    Map<OrderStatus_24162063, Long> countByStatus(int userid);
 }

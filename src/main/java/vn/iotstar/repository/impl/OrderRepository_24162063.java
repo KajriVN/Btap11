@@ -2,14 +2,18 @@ package vn.iotstar.repository.impl;
 
 import vn.iotstar.entity.Book_24162063;
 import vn.iotstar.entity.CartItem_24162063;
+import jakarta.persistence.TypedQuery;
 import vn.iotstar.entity.OrderItem_24162063;
+import vn.iotstar.entity.OrderStatus_24162063;
 import vn.iotstar.entity.Order_24162063;
 import vn.iotstar.entity.User_24162063;
 import vn.iotstar.repository.IOrderRepository_24162063;
 import vn.iotstar.util.Constant_24162063;
 
 import java.math.BigDecimal;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class OrderRepository_24162063 extends AbstractRepository_24162063 implements IOrderRepository_24162063 {
 
@@ -76,5 +80,57 @@ public class OrderRepository_24162063 extends AbstractRepository_24162063 implem
                 .getResultStream()
                 .findFirst()
                 .orElse(null));
+    }
+
+    @Override
+    public List<Order_24162063> findByUser(int userid, OrderStatus_24162063 status, int offset, int limit) {
+        return query(em -> {
+            // Phan trang tren id truoc, roi moi JOIN FETCH items (phan trang thang tren JOIN FETCH se sai)
+            TypedQuery<Integer> idQuery = em.createQuery(
+                            "SELECT o.orderId FROM Order_24162063 o WHERE o.user.id = :uid"
+                                    + (status == null ? "" : " AND o.status = :status")
+                                    + " ORDER BY o.orderId DESC", Integer.class)
+                    .setParameter("uid", userid);
+            if (status != null) {
+                idQuery.setParameter("status", status);
+            }
+            List<Integer> ids = idQuery.setFirstResult(offset).setMaxResults(limit).getResultList();
+            if (ids.isEmpty()) {
+                return List.of();
+            }
+            return em.createQuery(
+                            "SELECT o FROM Order_24162063 o LEFT JOIN FETCH o.items"
+                                    + " WHERE o.orderId IN :ids ORDER BY o.orderId DESC", Order_24162063.class)
+                    .setParameter("ids", ids)
+                    .getResultList();
+        });
+    }
+
+    @Override
+    public long countByUser(int userid, OrderStatus_24162063 status) {
+        return query(em -> {
+            TypedQuery<Long> q = em.createQuery(
+                            "SELECT COUNT(o) FROM Order_24162063 o WHERE o.user.id = :uid"
+                                    + (status == null ? "" : " AND o.status = :status"), Long.class)
+                    .setParameter("uid", userid);
+            if (status != null) {
+                q.setParameter("status", status);
+            }
+            return q.getSingleResult();
+        });
+    }
+
+    @Override
+    public Map<OrderStatus_24162063, Long> countByStatus(int userid) {
+        List<Object[]> rows = query(em -> em.createQuery(
+                        "SELECT o.status, COUNT(o) FROM Order_24162063 o WHERE o.user.id = :uid GROUP BY o.status",
+                        Object[].class)
+                .setParameter("uid", userid)
+                .getResultList());
+        Map<OrderStatus_24162063, Long> result = new EnumMap<>(OrderStatus_24162063.class);
+        for (Object[] row : rows) {
+            result.put((OrderStatus_24162063) row[0], (Long) row[1]);
+        }
+        return result;
     }
 }

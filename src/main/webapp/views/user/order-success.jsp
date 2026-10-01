@@ -47,6 +47,7 @@
                     </li>
                 </ul>
 
+                <a href="${ctx}/orders/detail?id=${order.orderId}" class="btn btn-outline-primary">Xem đơn hàng</a>
                 <a href="${ctx}/books" class="btn btn-primary">Tiếp tục mua sách</a>
             </div>
         </div>
