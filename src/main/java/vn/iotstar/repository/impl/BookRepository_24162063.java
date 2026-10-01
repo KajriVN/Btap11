@@ -61,6 +61,10 @@ public class BookRepository_24162063 extends AbstractRepository_24162063 impleme
             em.createNativeQuery("DELETE FROM cart_items WHERE bookid = ?1")
                     .setParameter(1, bookid)
                     .executeUpdate();
+            // Don cu van giu ten + gia sach, chi bo lien ket
+            em.createNativeQuery("UPDATE order_items SET bookid = NULL WHERE bookid = ?1")
+                    .setParameter(1, bookid)
+                    .executeUpdate();
             book.getAuthors().clear(); // xoa dong trong book_author
             em.remove(book);
         });

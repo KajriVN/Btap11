@@ -26,6 +26,9 @@ public final class Constant_24162063 {
     // Gio hang: moi sach chi duoc mua toi da 10 cuon (va khong vuot ton kho)
     public static final int CART_MAX_PER_ITEM = 10;
 
+    // Thanh toan khi nhan hang
+    public static final String PAYMENT_COD = "COD";
+
     // Phan trang
     public static final int HOME_PAGE_SIZE = 6;
     public static final int ADMIN_PAGE_SIZE = 5;

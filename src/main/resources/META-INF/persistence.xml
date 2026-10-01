@@ -11,6 +11,8 @@
         <class>vn.iotstar.entity.Author_24162063</class>
         <class>vn.iotstar.entity.Rating_24162063</class>
         <class>vn.iotstar.entity.CartItem_24162063</class>
+        <class>vn.iotstar.entity.Order_24162063</class>
+        <class>vn.iotstar.entity.OrderItem_24162063</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

@@ -8,6 +8,8 @@ GO
 USE BookStore;
 GO
 
+IF OBJECT_ID(N'dbo.order_items', N'U') IS NOT NULL DROP TABLE dbo.order_items;
+IF OBJECT_ID(N'dbo.orders', N'U') IS NOT NULL DROP TABLE dbo.orders;
 IF OBJECT_ID(N'dbo.cart_items', N'U') IS NOT NULL DROP TABLE dbo.cart_items;
 IF OBJECT_ID(N'dbo.rating', N'U') IS NOT NULL DROP TABLE dbo.rating;
 IF OBJECT_ID(N'dbo.book_author', N'U') IS NOT NULL DROP TABLE dbo.book_author;
@@ -74,6 +76,36 @@ CREATE TABLE dbo.cart_items (
     CONSTRAINT CK_cart_items_quantity CHECK (quantity > 0),
     CONSTRAINT FK_cart_items_users FOREIGN KEY (userid) REFERENCES dbo.users(id),
     CONSTRAINT FK_cart_items_books FOREIGN KEY (bookid) REFERENCES dbo.books(bookid)
+);
+
+-- Don hang: thanh toan COD, status luu dang chuoi
+CREATE TABLE dbo.orders (
+    order_id       INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    userid         INT            NOT NULL,
+    receiver_name  NVARCHAR(50)   NOT NULL,
+    phone          VARCHAR(15)    NOT NULL,
+    address        NVARCHAR(255)  NOT NULL,
+    note           NVARCHAR(255)  NULL,
+    payment_method VARCHAR(20)    NOT NULL DEFAULT 'COD',
+    status         VARCHAR(20)    NOT NULL DEFAULT 'NEW',
+    total_amount   DECIMAL(12, 2) NOT NULL,
+    created_at     DATETIME       NULL,
+    CONSTRAINT CK_orders_status CHECK (status IN
+        ('NEW', 'CONFIRMED', 'PREPARING', 'SHIPPING', 'DELIVERING', 'DELIVERED', 'CANCELLED', 'RETURNED')),
+    CONSTRAINT FK_orders_users FOREIGN KEY (userid) REFERENCES dbo.users(id)
+);
+
+-- Chi tiet don: luu ten + gia luc dat, bookid = NULL neu sach bi xoa
+CREATE TABLE dbo.order_items (
+    id         INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    order_id   INT           NOT NULL,
+    bookid     INT           NULL,
+    book_title VARCHAR(200)  NOT NULL,
+    price      DECIMAL(6, 2) NOT NULL,
+    quantity   INT           NOT NULL,
+    CONSTRAINT CK_order_items_quantity CHECK (quantity > 0),
+    CONSTRAINT FK_order_items_orders FOREIGN KEY (order_id) REFERENCES dbo.orders(order_id),
+    CONSTRAINT FK_order_items_books  FOREIGN KEY (bookid)   REFERENCES dbo.books(bookid)
 );
 GO
 

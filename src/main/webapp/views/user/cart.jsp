@@ -87,6 +87,14 @@
             </div>
             <div class="text-end">
                 <div class="fs-5">Tổng cộng: <strong class="text-danger"><t:money value="${total}"/></strong></div>
+                <c:choose>
+                    <c:when test="${hasOverStock}">
+                        <button class="btn btn-danger mt-2" disabled>Thanh toán</button>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${ctx}/checkout" class="btn btn-danger mt-2"><i class="bi bi-credit-card"></i> Thanh toán</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </div>
 
